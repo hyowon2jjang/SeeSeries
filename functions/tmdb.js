@@ -1,7 +1,7 @@
 const axios = require("axios");
 const config = require("./config");
 
-const API_KEY = config?.tmdb?.key;
+const API_KEY = (config && config.tmdb && config.tmdb.key) || null;
 
 if (!API_KEY) {
   throw new Error("❌ TMDB API key is missing. Check functions/config.js");
@@ -9,7 +9,7 @@ if (!API_KEY) {
 
 const tmdb = axios.create({
   baseURL: "https://api.themoviedb.org/3",
-  params: { api_key: API_KEY, language: "ko-KR" },
+  params: {api_key: API_KEY, language: "ko-KR"},
 });
 
 // ✅ 함수 이름 fetchPopularSeries
@@ -19,4 +19,4 @@ async function fetchPopularSeries() {
   return res.data.results;
 }
 
-module.exports = { fetchPopularSeries };
+module.exports = {fetchPopularSeries};

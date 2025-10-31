@@ -1,0 +1,77 @@
+/* src/pages/Home.css */
+.home-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: linear-gradient(to bottom, #f9fafb, #f3f4f6);
+  font-family: sans-serif;
+}
+
+.home-header {
+  width: 100%;
+  padding: 2rem 0;
+  text-align: center;
+  background-color: rgba(255,255,255,0.8);
+  backdrop-filter: blur(6px);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.home-header h1 {
+  font-size: 1.875rem;
+  font-weight: bold;
+  color: #1f2937;
+  margin-bottom: 0.25rem;
+}
+
+.home-header p {
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.home-main {
+  width: 100%;
+  max-width: 72rem;
+  padding: 2.5rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.loading-text {
+  color: #6b7280;
+  margin-top: 2.5rem;
+}
+
+.series-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 2.5rem 1.5rem;
+  justify-items: center;
+}
+
+@media (min-width: 640px) { .series-grid { grid-template-columns: repeat(3, minmax(0,1fr)); } }
+@media (min-width: 768px) { .series-grid { grid-template-columns: repeat(4, minmax(0,1fr)); } }
+@media (min-width: 1024px) { .series-grid { grid-template-columns: repeat(5, minmax(0,1fr)); } }
+
+.series-card-wrapper {
+  transition: transform 0.2s;
+  cursor: pointer;
+}
+
+.series-card-wrapper:hover {
+  transform: scale(1.05);
+}
+
+.home-footer {
+  width: 100%;
+  padding: 1.5rem 0;
+  text-align: center;
+  font-size: 0.875rem;
+  color: #9ca3af;
+  border-top: 1px solid #e5e7eb;
+}
+.home-footer a {
+  color: #3b82f6;
+  text-decoration: none;
+}

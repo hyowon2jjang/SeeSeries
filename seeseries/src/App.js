@@ -1,10 +1,18 @@
-import { importSeries } from "./seed/importSeries";
+// src/App.js
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Home from "./pages/Home";
+import SeriesDetail from "./pages/SeriesDetail";
 
-export default function App() {
+function App() {
   return (
-    <div>
-      <h1>SeeSeries Data Import</h1>
-      <button onClick={() => importSeries(1396)}>Breaking Bad Import</button>
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/series/:id" element={<SeriesDetail />} />
+      </Routes>
+    </Router>
   );
 }
+
+export default App;

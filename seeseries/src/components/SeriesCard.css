@@ -1,0 +1,23 @@
+.series-card {
+  width: 200px;
+  border-radius: 1rem;
+  overflow: hidden;
+  background-color: #fff;
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+}
+
+.series-card-image-wrapper {
+  width: 100%;
+  height: 300px; /* 고정 높이 */
+  overflow: hidden;
+}
+
+.series-card-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  transition: transform 0.3s;
+}

@@ -1,6 +1,6 @@
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
-const { fetchPopularSeries } = require("./tmdb");
+const {fetchPopularSeries} = require("./tmdb");
 
 admin.initializeApp();
 const db = admin.firestore();

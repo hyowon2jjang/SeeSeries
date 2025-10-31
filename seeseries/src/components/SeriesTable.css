@@ -1,0 +1,27 @@
+.series-table {
+  min-width: 300px;
+  border-collapse: collapse;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.series-table thead { background-color: #e5e7eb; }
+
+.series-table th,
+.series-table td { padding: 0.5rem; }
+
+.series-table th { text-align: left; }
+
+.series-table td {
+  border-top: 1px solid #d1d5db;
+  text-align: left;
+}
+
+.series-table td:nth-child(2),
+.series-table td:nth-child(3) { text-align: center; }
+
+.series-table td:nth-child(3) {
+  font-weight: 500;
+  color: #2563eb;
+}
