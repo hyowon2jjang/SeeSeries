@@ -15,7 +15,7 @@ const SeriesTable = ({ seasons }) => {
       <tbody>
         {seasons.map((season, idx) => (
           <tr key={idx}>
-            <td>{season.title}</td>
+            <td>{season.name}</td>
             <td>{season.episode_count}</td>
             <td>{season.vote_average.toFixed(1)}</td>
           </tr>

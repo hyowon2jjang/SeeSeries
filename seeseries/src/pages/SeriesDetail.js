@@ -1,6 +1,6 @@
 // src/pages/SeriesDetail.js
 import React, { useEffect, useState } from "react";
-import { db } from "../firebase";
+import { db } from "../services/firebase";
 import { doc, getDoc } from "firebase/firestore";
 import { useParams, useNavigate } from "react-router-dom";
 import SeriesTable from "../components/SeriesTable";
@@ -39,7 +39,7 @@ const SeriesDetail = () => {
 
       <div className="series-detail-content">
         <img
-          src={`https://image.tmdb.org/t/p/w400${series.poster_url}`}
+          src={`https://image.tmdb.org/t/p/w400${series.poster_path}`}
           alt={series.title}
           className="series-poster"
         />
