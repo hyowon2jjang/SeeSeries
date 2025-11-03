@@ -35,7 +35,7 @@ const Home = () => {
     fetchAll();
   }, []);
 
-  // ✅ 검색어 입력 시 Firestore → TMDB 순서로 검색
+  // ✅ 검색 로직 (Firestore → TMDB fallback)
   useEffect(() => {
     const fetchSearchResults = async () => {
       if (!searchQuery.trim()) {
@@ -46,54 +46,95 @@ const Home = () => {
       setIsLoading(true);
       const queryLower = searchQuery.toLowerCase();
 
-      // 1️⃣ Firestore에서 검색
+      // 🔹 1️⃣ Firestore 검색 (여러 필드 + 완전 일치 우선 정렬)
       const filtered = allSeries.filter((series) => {
-    const t = String(series?.title || series?.name || "").toLowerCase();
-    return t.includes(queryLower);
-  });
+        const name = String(series?.name || "").toLowerCase();
+        const title = String(series?.title || "").toLowerCase();
+        const original = String(series?.original_name || "").toLowerCase();
+        const alt = String(series?.title_kr || "").toLowerCase();
+        return (
+          name.includes(queryLower) ||
+          title.includes(queryLower) ||
+          original.includes(queryLower) ||
+          alt.includes(queryLower)
+        );
+      });
 
-      if (filtered.length > 0) {
-        setSearchResults(filtered);
+      // 🔹 정렬: 완전 일치 > 부분 일치
+      const sorted = filtered.sort((a, b) => {
+        const aExact =
+          a.name?.toLowerCase() === queryLower ||
+          a.title?.toLowerCase() === queryLower ||
+          a.original_name?.toLowerCase() === queryLower;
+        const bExact =
+          b.name?.toLowerCase() === queryLower ||
+          b.title?.toLowerCase() === queryLower ||
+          b.original_name?.toLowerCase() === queryLower;
+        return bExact - aExact;
+      });
+
+      if (sorted.length > 0) {
+        setSearchResults(sorted);
         setIsLoading(false);
         return;
       }
 
-      // 2️⃣ TMDB Cloud Function 호출 (없을 경우 자동 추가)
+      // 🔹 2️⃣ TMDB Cloud Function 호출 (없을 경우 자동 추가)
       try {
-  const res = await fetch(
-    `https://us-central1-seeseries-66a16.cloudfunctions.net/searchSeries?query=${encodeURIComponent(
-      searchQuery
-    )}`
-  );
+        const res = await fetch(
+          `https://us-central1-seeseries-66a16.cloudfunctions.net/searchSeries?query=${encodeURIComponent(
+            searchQuery
+          )}`
+        );
 
-  if (!res.ok) throw new Error("TMDB function error");
-  const data = await res.json();
+        if (!res.ok) throw new Error("TMDB function error");
+        const data = await res.json();
 
-  // ✅ Firestore 새 데이터 다시 가져오기
-  const updatedSnapshot = await getDocs(collection(db, "series"));
-  const updatedData = updatedSnapshot.docs.map((doc) => ({
-    id: doc.id,
-    ...doc.data(),
-  }));
+        // 🔹 3️⃣ Firestore 최신 데이터 다시 가져오기
+        const updatedSnapshot = await getDocs(collection(db, "series"));
+        const updatedData = updatedSnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
 
-  // ✅ Firestore에서 새로 추가된 시리즈 중 검색어 포함된 것만 필터링
-  const queryLower = searchQuery.toLowerCase();
-  const matched = updatedData.filter((series) =>
-    String(series?.title || "").toLowerCase().includes(queryLower)
-  );
+        // 🔹 새로 추가된 시리즈 중 검색어 포함된 것만 필터링
+        const matched = updatedData.filter((series) => {
+          const name = String(series?.name || "").toLowerCase();
+          const title = String(series?.title || "").toLowerCase();
+          const original = String(series?.original_name || "").toLowerCase();
+          const alt = String(series?.title_kr || "").toLowerCase();
+          return (
+            name.includes(queryLower) ||
+            title.includes(queryLower) ||
+            original.includes(queryLower) ||
+            alt.includes(queryLower)
+          );
+        });
 
-  // ✅ 최신 데이터 반영
-  setAllSeries(updatedData);
-  setSearchResults(matched);
-} catch (err) {
-  console.error("❌ TMDB search error:", err);
-} finally {
-  setIsLoading(false);
-}
+        // 🔹 완전 일치 우선 정렬
+        const matchedSorted = matched.sort((a, b) => {
+          const aExact =
+            a.name?.toLowerCase() === queryLower ||
+            a.title?.toLowerCase() === queryLower ||
+            a.original_name?.toLowerCase() === queryLower;
+          const bExact =
+            b.name?.toLowerCase() === queryLower ||
+            b.title?.toLowerCase() === queryLower ||
+            b.original_name?.toLowerCase() === queryLower;
+          return bExact - aExact;
+        });
+
+        setAllSeries(updatedData);
+        setSearchResults(matchedSorted);
+      } catch (err) {
+        console.error("❌ TMDB search error:", err);
+      } finally {
+        setIsLoading(false);
+      }
     };
 
     fetchSearchResults();
-  }, [searchQuery]);
+  }, [searchQuery, allSeries]);
 
   return (
     <div className="home-container">
@@ -136,7 +177,7 @@ const Home = () => {
             )}
           </section>
         )}
-        
+
         {/* 🌟 인기 시리즈 섹션 */}
         <section className="popular-section">
           <h2>🔥 지금 인기 있는 시리즈</h2>
@@ -152,8 +193,6 @@ const Home = () => {
             ))}
           </div>
         </section>
-
-        
       </main>
 
       <footer className="home-footer">

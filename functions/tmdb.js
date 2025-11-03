@@ -1,47 +1,82 @@
+// functions/tmdb.js
+
 const axios = require("axios");
+const admin = require("firebase-admin");
 
-let API_KEY = null;
+if (!admin.apps || admin.apps.length === 0) {
+  admin.initializeApp();
+}
+const db = admin.firestore();
 
-// 1) 가능한 소스들에서 안전하게 키를 가져옵니다.
-try {
-  // firebase-functions의 런타임 설정이 있으면 우선 사용
-  const functions = require("firebase-functions");
-  if (functions && functions.config && functions.config().tmdb && functions.config().tmdb.key) {
-    API_KEY = functions.config().tmdb.key;
+const TMDB_API_KEY = process.env.TMDB_API_KEY;
+const TMDB_BASE = "https://api.themoviedb.org/3";
+
+
+/**
+ * TMDB API에서 시리즈 데이터를 가져오는 함수
+ * @param {string} tmdbId - 검색어
+ * @return {Promise<Object[]>} 시리즈 데이터 배열
+ */
+async function fetchFullSeriesData(tmdbId) {
+  try {
+    // 1️⃣ 기본 시리즈 정보
+    const {data: series} = await axios.get(`${TMDB_BASE}/tv/${tmdbId}`, {
+      params: {api_key: TMDB_API_KEY, language: "ko-KR"},
+    });
+
+    const seriesRef = db.collection("series").doc(String(tmdbId));
+
+    // 2️⃣ Firestore에 기본 정보 저장
+    await seriesRef.set(
+        {tmdb_id: tmdbId,
+          title: series.name,
+          original_name: series.original_name,
+          poster_path: series.poster_path,
+          overview: series.overview,
+          popularity: series.popularity,
+          vote_average: series.vote_average,
+          first_air_date: series.first_air_date,
+          number_of_seasons: series.number_of_seasons,
+          number_of_episodes: series.number_of_episodes,
+          last_updated: new Date(),
+        },
+        {merge: true},
+    );
+
+    // 3️⃣ 시즌 정보 가져오기
+    for (const season of series.seasons) {
+      const seasonRef =
+        seriesRef.collection("seasons").doc(String(season.season_number));
+      await seasonRef.set({
+        name: season.name,
+        air_date: season.air_date,
+        season_number: season.season_number,
+        episode_count: season.episode_count,
+      });
+
+      // 4️⃣ 에피소드 정보 가져오기
+      const {data: seasonDetail} = await axios.get(
+          `${TMDB_BASE}/tv/${tmdbId}/season/${season.season_number}`,
+          {params: {api_key: TMDB_API_KEY, language: "ko-KR"}},
+      );
+
+      for (const ep of seasonDetail.episodes) {
+        await seasonRef.collection("episodes").
+            doc(String(ep.episode_number)).set({
+              name: ep.name,
+              overview: ep.overview,
+              air_date: ep.air_date,
+              episode_number: ep.episode_number,
+              vote_average: ep.vote_average,
+            });
+      }
+    }
+
+    return {success: true};
+  } catch (err) {
+    console.error("❌ fetchFullSeriesData error:", err.message);
+    return {success: false, error: err.message};
   }
-} catch (e) {
-  // firebase-functions가 없거나 로드 실패할 경우 무시
 }
 
-try {
-  // 로컬 개발을 위해 로컬 config.js가 있으면 사용
-  const localConfig = require("./config");
-  API_KEY = API_KEY || (localConfig && localConfig.tmdb && localConfig.tmdb.key) || null;
-} catch (e) {
-  // 로컬 config가 없으면 무시
-}
-
-// 환경 변수 폴백
-API_KEY = API_KEY || process.env.TMDB_API_KEY || null;
-
-const tmdb = axios.create({
-  baseURL: "https://api.themoviedb.org/3",
-  // axios 인스턴스 생성 시 api_key가 null이면 요청 시 에러가 발생하므로,
-  // 호출 시점에 키 유효성을 검사하도록 함
-  params: { language: "ko-KR" },
-});
-
-// ✅ 함수 이름 fetchPopularSeries
-async function fetchPopularSeries() {
-  if (!API_KEY) {
-    throw new Error("❌ TMDB API key is missing. Set it via firebase functions config or functions/config.js or TMDB_API_KEY env var.");
-  }
-
-  const res = await tmdb.get("/tv/popular", {
-    params: { api_key: API_KEY },
-  });
-  console.log("✅ TMDB popular series fetched:", res.data.results.length);
-  return res.data.results;
-}
-
-module.exports = { fetchPopularSeries };
+module.exports = {fetchFullSeriesData};
