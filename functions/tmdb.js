@@ -11,7 +11,7 @@ const db = admin.firestore();
 const TMDB_API_KEY = process.env.TMDB_API_KEY;
 const TMDB_BASE = "https://api.themoviedb.org/3";
 
-
+console.log("🔑 TMDB_API_KEY:", TMDB_API_KEY ? "exists" : "MISSING");
 /**
  * TMDB API에서 시리즈 데이터를 가져오는 함수
  * @param {string} tmdbId - 검색어
@@ -74,7 +74,7 @@ async function fetchFullSeriesData(tmdbId) {
 
     return {success: true};
   } catch (err) {
-    console.error("❌ fetchFullSeriesData error:", err.message);
+    console.error("❌ fetchFullSeriesData error:", err.message, );
     return {success: false, error: err.message};
   }
 }
