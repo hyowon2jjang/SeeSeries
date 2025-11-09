@@ -1,0 +1,47 @@
+.episode-grid {
+  display: flex;
+  flex-direction: column;
+  border-top: 2px solid #eee;
+}
+
+.grid-header, .grid-row {
+  display: grid;
+  grid-template-columns: 60px repeat(auto-fit, minmax(60px, 1fr));
+  align-items: center;
+  text-align: center;
+}
+
+.grid-header {
+  font-weight: 600;
+  color: #444;
+  margin-bottom: 6px;
+}
+
+.ep-index {
+  font-weight: 600;
+  color: #666;
+}
+
+.ep-cell {
+  border-radius: 6px;
+  margin: 2px;
+  padding: 6px;
+  color: white;
+  font-weight: 600;
+  transition: transform 0.15s ease-in-out;
+}
+
+.ep-cell:hover {
+  transform: scale(1.1);
+}
+
+.awesome { background-color: #16a34a; }
+.great { background-color: #22c55e; }
+.good { background-color: #84cc16; }
+.regular { background-color: #eab308; }
+.bad { background-color: #f97316; }
+.garbage { background-color: #ef4444; }
+
+.empty-cell {
+  height: 32px;
+}

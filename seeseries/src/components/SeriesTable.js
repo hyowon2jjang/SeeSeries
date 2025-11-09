@@ -1,6 +1,6 @@
 // src/components/SeriesTable.js
 import React from "react";
-import "./SeriesTable.css";
+import "../styles/SeriesTable.css";
 
 const SeriesTable = ({ seasons }) => {
   return (

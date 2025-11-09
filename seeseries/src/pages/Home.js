@@ -4,7 +4,7 @@ import { db } from "../services/firebase";
 import { collection, getDocs, query, orderBy, limit } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
 import SeriesCard from "../components/SeriesCard";
-import "./Home.css";
+import "./../styles/Home.css";
 
 const Home = () => {
   const [popularSeries, setPopularSeries] = useState([]);

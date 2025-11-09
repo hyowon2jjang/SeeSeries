@@ -1,0 +1,137 @@
+.series-detail {
+  padding: 2rem;
+  color: #f3f3f3;
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  background-color: #111;
+  min-height: 100vh;
+}
+
+.series-header {
+  display: flex;
+  gap: 2rem;
+  align-items: flex-start;
+  margin-bottom: 3rem;
+}
+
+.series-header img {
+  width: 220px;
+  height: 330px;
+  border-radius: 12px;
+  object-fit: cover;
+  box-shadow: 0 0 16px rgba(0, 0, 0, 0.6);
+}
+
+.series-info {
+  flex: 1;
+}
+
+.series-title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.series-meta {
+  font-size: 0.95rem;
+  opacity: 0.8;
+  margin-bottom: 1rem;
+}
+
+.series-overview {
+  line-height: 1.6;
+  font-size: 1rem;
+  color: #ccc;
+}
+
+/* =============================
+   🟩 시즌별 에피소드 평점 표
+============================= */
+.episode-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  margin-top: 3rem;
+}
+
+.season-title {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 1rem;
+}
+
+/* 표 전체 */
+.episode-table {
+  display: grid;
+  grid-auto-rows: 50px;
+  grid-auto-columns: 50px;
+  gap: 8px;
+  overflow-x: auto;
+}
+
+/* 각 셀 (평점 칸) */
+.episode-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.2s ease;
+}
+
+.episode-cell:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.25);
+}
+
+/* 평점별 색상 단계 */
+.rating-awesome {
+  background-color: #2ecc71; /* 9+ */
+}
+.rating-great {
+  background-color: #27ae60; /* 8+ */
+}
+.rating-good {
+  background-color: #f1c40f; /* 7+ */
+  color: #222;
+}
+.rating-regular {
+  background-color: #e67e22; /* 6+ */
+}
+.rating-bad {
+  background-color: #e74c3c; /* 5 이하 */
+}
+.rating-na {
+  background-color: #555;
+  opacity: 0.6;
+}
+
+/* =============================
+   반응형
+============================= */
+@media (max-width: 768px) {
+  .series-header {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .series-header img {
+    width: 180px;
+    height: 260px;
+  }
+
+  .series-info {
+    text-align: center;
+  }
+
+  .episode-table {
+    grid-auto-rows: 40px;
+    grid-auto-columns: 40px;
+    gap: 6px;
+  }
+
+  .episode-cell {
+    font-size: 0.8rem;
+  }
+}

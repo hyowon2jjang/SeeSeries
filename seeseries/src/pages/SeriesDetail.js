@@ -1,58 +1,33 @@
-// src/pages/SeriesDetail.js
-import React, { useEffect, useState } from "react";
-import { db } from "../services/firebase";
-import { doc, getDoc } from "firebase/firestore";
-import { useParams, useNavigate } from "react-router-dom";
-import SeriesTable from "../components/SeriesTable";
-import "./SeriesDetail.css"; // CSS import
 
-const SeriesDetail = () => {
-  const { id } = useParams();
-  const [series, setSeries] = useState(null);
-  const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchSeriesDetail = async () => {
-      try {
-        const docRef = doc(db, "series", id);
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-          setSeries(docSnap.data());
-        } else {
-          console.warn("No such document!");
-        }
-      } catch (err) {
-        console.error("❌ Firestore fetch error:", err);
-      }
-    };
+import React from "react";
+import "./../styles/SeriesDetail.css";
+import EpisodeGrid from "./../components/EpisodeGrid";
 
-    fetchSeriesDetail();
-  }, [id]);
+export default function SeriesDetail({ series }) {
+  if (!series) return null;
 
-  if (!series) return <p className="loading-text">불러오는 중...</p>;
+  console.log("SeriesDetail loaded:", series);
 
   return (
-    <div className="series-detail-container">
-      <button onClick={() => navigate(-1)} className="back-button">
-        ← 돌아가기
-      </button>
+    <div className="series-detail">
 
-      <div className="series-detail-content">
+      <div className="series-header">
         <img
-          src={`https://image.tmdb.org/t/p/w400${series.poster_path}`}
+          src={series.poster_path}
           alt={series.title}
-          className="series-poster"
         />
         <div className="series-info">
-          <h2 className="series-title">{series.title}</h2>
-          <p className="series-overview">{series.overview || "설명이 없습니다."}</p>
-
-          <h3 className="season-title">시즌별 평점</h3>
-          <SeriesTable seasons={series.seasons || []} />
+          <div className="series-title">{series.title}</div>
+          <div className="series-meta">
+            ⭐ {series.vote_average?.toFixed(1)} · {series.first_air_date}
+          </div>
+          <div className="series-overview">{series.overview}</div>
         </div>
       </div>
+
+      {/* 시즌/에피소드 표 */}
+      <EpisodeGrid seriesId={series.id || series.tmdb_id} />
     </div>
   );
-};
-
-export default SeriesDetail;
+}

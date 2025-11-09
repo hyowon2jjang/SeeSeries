@@ -1,6 +1,6 @@
 // src/components/SeriesCard.js
 import React from "react";
-import "./SeriesCard.css";
+import "./../styles/SeriesCard.css";
 
 const SeriesCard = ({ series }) => {
   const imageUrl = series.poster_path
@@ -15,7 +15,7 @@ imageUrl
     }`} alt={series.title || series.name} className="series-card-image" />
   </div>
   <div className="series-card-title">
-    <p><h3>{series.title || series.name}</h3></p>
+    <h3>{series.title || series.name}</h3>
   </div>
 </div>
   );
