@@ -34,5 +34,10 @@
       "port": 4000,
       "host": "0.0.0.0"
     }
+  },
+  "hosting": {
+    "public": "build",
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+    "cleanUrls": true
   }
 }
