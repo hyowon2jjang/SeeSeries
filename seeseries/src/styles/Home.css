@@ -4,7 +4,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: linear-gradient(to bottom, #f9fafb, #f3f4f6);
+  background: linear-gradient(to bottom, #111, #1f1f1f);
   font-family: sans-serif;
 }
 
@@ -12,7 +12,7 @@
   width: 100%;
   padding: 2rem 0;
   text-align: center;
-  background-color: rgba(255,255,255,0.8);
+  background-color: rgba(24, 24, 24, 0.8);
   backdrop-filter: blur(6px);
   box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
@@ -20,13 +20,13 @@
 .home-header h1 {
   font-size: 1.875rem;
   font-weight: bold;
-  color: #1f2937;
+  color: #ffffff;
   margin-bottom: 0.25rem;
 }
 
 .home-header p {
   font-size: 0.875rem;
-  color: #6b7280;
+  color: #d3d3d3;
 }
 
 .home-main {
@@ -39,7 +39,7 @@
 }
 
 .loading-text {
-  color: #6b7280;
+  color: #dfdfdf;
   margin-top: 2.5rem;
 }
 
@@ -110,7 +110,7 @@
 .search-section h2 {
   font-size: 1.25rem;
   font-weight: 600;
-  color: #1f2937;
+  color: #e9f1fd;
   margin-bottom: 1rem;
   text-align: left;
   width: 100%;

@@ -4,17 +4,21 @@ import React from "react";
 import "./../styles/SeriesDetail.css";
 import EpisodeGrid from "./../components/EpisodeGrid";
 
+
+
 export default function SeriesDetail({ series }) {
   if (!series) return null;
 
-  console.log("SeriesDetail loaded:", series);
+  const imageUrl = series.poster_path
+    ? series.poster_path
+    : "https://via.placeholder.com/240x360?text=No+Image";
 
   return (
     <div className="series-detail">
 
       <div className="series-header">
         <img
-          src={series.poster_path}
+          src={`https://image.tmdb.org/t/p/w400${imageUrl}`}
           alt={series.title}
         />
         <div className="series-info">

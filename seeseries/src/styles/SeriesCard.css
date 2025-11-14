@@ -2,10 +2,18 @@
   width: 200px;
   border-radius: 1rem;
   overflow: hidden;
-  background-color: #fff;
+  background-color: #242424;
   display: flex;
   flex-direction: column;
   cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  color: #fff;
+  align-items: center;
+}
+
+.series-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
 }
 
 .series-card-image-wrapper {

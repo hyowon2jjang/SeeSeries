@@ -1,6 +1,12 @@
 import React, { useEffect, useState } from "react";
 import "../styles/EpisodeGrid.css";
-import { db } from "../services/firebase"; // Firestore 연결된 경우
+import {
+  collection,
+  getDocs,
+  query,
+  orderBy,
+} from "firebase/firestore";
+import { db } from "../services/firebase";
 
 /**
  * props: { seriesId }
@@ -14,25 +20,27 @@ export default function EpisodeGrid({ seriesId }) {
 
     const fetchSeasons = async () => {
       try {
-        const seasonsSnap = await db
-          .collection("series")
-          .doc(seriesId)
-          .collection("seasons")
-          .orderBy("season_number")
-          .get();
+        // 🔹 시즌 데이터 가져오기
+        const seasonsRef = collection(db, "series", String(seriesId), "seasons");
+        const seasonsQuery = query(seasonsRef, orderBy("season_number"));
+        const seasonsSnap = await getDocs(seasonsQuery);
 
         const seasonData = [];
 
         for (const seasonDoc of seasonsSnap.docs) {
           const season = seasonDoc.data();
-          const episodesSnap = await db
-            .collection("series")
-            .doc(seriesId)
-            .collection("seasons")
-            .doc(String(season.season_number))
-            .collection("episodes")
-            .orderBy("episode_number")
-            .get();
+
+          // 🔹 해당 시즌의 에피소드 데이터 가져오기
+          const episodesRef = collection(
+            db,
+            "series",
+            String(seriesId),
+            "seasons",
+            String(season.season_number),
+            "episodes"
+          );
+          const episodesQuery = query(episodesRef, orderBy("episode_number"));
+          const episodesSnap = await getDocs(episodesQuery);
 
           const episodes = episodesSnap.docs.map((ep) => ep.data());
           seasonData.push({ ...season, episodes });
@@ -51,7 +59,7 @@ export default function EpisodeGrid({ seriesId }) {
 
   if (loading) return <div style={{ color: "#ccc" }}>로딩 중...</div>;
 
-  // 평점에 따라 색상 클래스 선택
+  // 평점 색상 클래스
   const getRatingClass = (score) => {
     if (score >= 9) return "rating-awesome";
     if (score >= 8) return "rating-great";
@@ -64,13 +72,14 @@ export default function EpisodeGrid({ seriesId }) {
   return (
     <div className="episode-grid">
       {seasons.map((season) => (
-        <div key={season.season_number}>
+        <div key={season.season_number} className="season-block">
           <div className="season-title">Season {season.season_number}</div>
 
           <div
             className="episode-table"
             style={{
-              gridTemplateColumns: `repeat(${season.episodes.length}, 50px)`,
+              gridTemplateColumns: `repeat(${season.episodes.length}, 50px)`
+,
             }}
           >
             {season.episodes.map((ep) => (

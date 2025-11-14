@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import SeriesCard from "../components/SeriesCard";
 import "./../styles/Home.css";
 
-const Home = () => {
+export default function Home({ onSelectSeries }) {
   const [popularSeries, setPopularSeries] = useState([]);
   const [searchResults, setSearchResults] = useState([]);
   const [allSeries, setAllSeries] = useState([]);
@@ -139,7 +139,7 @@ const Home = () => {
   return (
     <div className="home-container">
       <header className="home-header">
-        <h1>🎬 Series Graph Korea</h1>
+        <h1>🎬 SeeSeries Korea</h1>
         <p>Discover trending series and find your favorites</p>
 
         {/* 🔍 검색창 */}
@@ -165,13 +165,11 @@ const Home = () => {
             ) : (
               <div className="series-grid">
                 {searchResults.map((series) => (
-                  <div
+                  <SeriesCard
                     key={series.id || series.tmdb_id}
-                    onClick={() => navigate(`/series/${series.id || series.tmdb_id}`)}
-                    className="series-card-wrapper"
-                  >
-                    <SeriesCard series={series} />
-                  </div>
+                    series={series}
+                    onSelectSeries={onSelectSeries}
+                  />
                 ))}
               </div>
             )}
@@ -183,13 +181,11 @@ const Home = () => {
           <h2>🔥 지금 인기 있는 시리즈</h2>
           <div className="series-grid">
             {popularSeries.map((series) => (
-              <div
+              <SeriesCard
                 key={series.id}
-                onClick={() => navigate(`/series/${series.id}`)}
-                className="series-card-wrapper"
-              >
-                <SeriesCard series={series} />
-              </div>
+                series={series}
+                onSelectSeries={onSelectSeries}
+              />
             ))}
           </div>
         </section>
@@ -200,6 +196,4 @@ const Home = () => {
       </footer>
     </div>
   );
-};
-
-export default Home;
+}

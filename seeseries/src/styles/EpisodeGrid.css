@@ -1,47 +1,88 @@
+/* 전체 컨테이너 */
 .episode-grid {
+  margin-top: 40px;
+  width: 100%;
   display: flex;
   flex-direction: column;
-  border-top: 2px solid #eee;
+  gap: 40px;
 }
 
-.grid-header, .grid-row {
+/* 시즌 블록 */
+.season-block {
+  padding-bottom: 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* 시즌 제목 */
+.season-title {
+  font-size: 22px;
+  font-weight: 600;
+  color: #ffffffdd;
+  margin-bottom: 14px;
+}
+
+/* 에피소드 테이블 (그리드) */
+.episode-table {
   display: grid;
-  grid-template-columns: 60px repeat(auto-fit, minmax(60px, 1fr));
+  gap: 6px;
+}
+
+/* 에피소드 셀 */
+.episode-cell {
+  width: 50px;
+  height: 50px;
+  display: flex;
+  justify-content: center;
   align-items: center;
-  text-align: center;
-}
-
-.grid-header {
+  font-size: 13px;
   font-weight: 600;
-  color: #444;
-  margin-bottom: 6px;
-}
-
-.ep-index {
-  font-weight: 600;
-  color: #666;
-}
-
-.ep-cell {
   border-radius: 6px;
-  margin: 2px;
-  padding: 6px;
-  color: white;
-  font-weight: 600;
-  transition: transform 0.15s ease-in-out;
+  transition: transform 0.15s ease, box-shadow 0.2s ease;
+  color: #fff;
+  cursor: default;
 }
 
-.ep-cell:hover {
-  transform: scale(1.1);
+/* Hover 효과 */
+.episode-cell:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
 }
 
-.awesome { background-color: #16a34a; }
-.great { background-color: #22c55e; }
-.good { background-color: #84cc16; }
-.regular { background-color: #eab308; }
-.bad { background-color: #f97316; }
-.garbage { background-color: #ef4444; }
+/* 평점 등급별 색상 */
+.rating-awesome {
+  background: #4caf50; /* 9점대 초록 */
+  color: #222;
+}
 
-.empty-cell {
-  height: 32px;
+.rating-great {
+  background: #cddc39; /* 8점대 라이트 그린 */
+  color: #222;
+}
+
+.rating-good {
+  background: #ffeb3b; /* 7점대 연두 */
+  color: #222;
+}
+
+.rating-regular {
+  background: #f7802a; /* 6점대 노랑 */
+  color: #222;
+}
+
+.rating-bad {
+  background: #f5252c; /* 1~5점대 주황 */
+  color: #222;
+}
+
+.rating-na {
+  background: #616161; /* 점수 없음 */
+}
+
+/* 모바일 대응 */
+@media (max-width: 600px) {
+  .episode-cell {
+    width: 42px;
+    height: 42px;
+    font-size: 12px;
+  }
 }
